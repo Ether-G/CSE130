@@ -6,7 +6,7 @@
 #      This program allows the user to guess a random number between 1 and a user-specified upper limit.
 #      It provides feedback on whether guesses are too high or too low and displays the total guesses and the guessed numbers at the end.
 # 4. What was the hardest part? Be as specific as possible.
-#      Trying to come up with a compact way to represent this code.
+#      The hardest part was figuring out how to setup my screen for recording the video. The assignment itself was fairly simple.
 # 5. How long did it take for you to complete the assignment?
 #      ~ 15-30 minutes. Have prior Python Experience.
 
