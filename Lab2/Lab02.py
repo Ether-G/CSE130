@@ -12,6 +12,8 @@
 #      code for this class.
 # 5. How long did it take for you to complete the assignment?
 #      Base assignment ~30 minutes, hashing version, ~1 hour.
+#
+# P.S. Love the monty python reference (:
 
 import json
 
