@@ -1,0 +1,90 @@
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#E3E3E3',
+    'primaryTextColor': '#000000',
+    'primaryBorderColor': '#000000',
+    'lineColor': '#000000',
+    'textColor': '#000000'
+  },
+  'flowchart': {
+    'nodeSpacing': 10,
+    'rankSpacing': 20,
+    'curve': 'basis'
+  }
+}}%%
+
+flowchart LR
+    Start([Start]) --> ColorGroup{"Own all green
+    properties?"}
+    
+    ColorGroup -- "n" --> NoProperties["Cannot purchase hotel until
+    you own all properties"]
+    
+    ColorGroup -- "y" --> CheckPA{"PA status?
+    0-5"}
+    
+    CheckPA -- "5" --> OneHotel["Cannot purchase hotel
+    if one exists"]
+    
+    CheckPA -- "0-4" --> CheckHotels{"Hotels
+    available?"}
+    
+    CheckHotels -- "0" --> NoHotels["No hotels available"]
+    
+    CheckHotels -- "≥1" --> CheckHouses{"Houses
+    available?"}
+    
+    CheckHouses -- "0" --> NoHouses["No houses available"]
+    
+    CheckHouses -- "≥1" --> CheckPC{"PC status?
+    0-5"}
+    
+    CheckPC --> CheckNC{"NC status?
+    0-5"}
+    
+    CheckNC --> CalcNeeds{"Calculate
+    needs"}
+    
+    CalcNeeds --> CheckCash{"Enough
+    cash?"}
+    
+    CheckCash -- "no" --> InsufficientFunds["Insufficient funds"]
+    
+    CheckCash -- "yes" --> PathDecide{"Development
+    path?"}
+    
+    PathDecide -- "PC hotel" --> SwapPC["Swap PC hotel
+    with PA houses"]
+    
+    PathDecide -- "NC hotel" --> SwapNC["Swap NC hotel
+    with PA houses"]
+    
+    PathDecide -- "All need" --> PurchaseA["Cost $[price]
+    Buy hotel + houses
+    Put hotel on PA
+    Houses on NC & PC"]
+    
+    PathDecide -- "NC only" --> PurchaseB["Cost $[price]
+    Buy hotel + houses
+    Put hotel on PA
+    Houses on NC"]
+    
+    PathDecide -- "PC only" --> PurchaseC["Cost $[price]
+    Buy hotel + houses
+    Put hotel on PA
+    Houses on PC"]
+    
+    PathDecide -- "PA only" --> PurchaseD["Cost $[price]
+    Buy hotel + houses
+    Put hotel on PA"]
+
+    %% Style definitions
+    classDef decision fill:#FFE6E6,stroke:#333,stroke-width:2px;
+    classDef process fill:#E6F3FF,stroke:#333,stroke-width:2px;
+    classDef output fill:#E6FFE6,stroke:#333,stroke-width:2px;
+    
+    %% Apply styles
+    class ColorGroup,CheckPA,CheckPC,CheckNC,CheckHotels,CheckHouses,CheckCash,PathDecide,CalcNeeds decision;
+    class Start process;
+    class NoProperties,OneHotel,NoHotels,NoHouses,InsufficientFunds,SwapPC,SwapNC,PurchaseA,PurchaseB,PurchaseC,PurchaseD output;
