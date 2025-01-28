@@ -1,0 +1,25 @@
+flowchart TD
+    A[Start] --> B{income >= 15100 AND < 61300?}
+    B -->|Yes| C[tax = 1510 + 0.15 * income - 15100]
+    B -->|No| D{income < 0?}
+    D -->|Yes| E[tax = 0.0]
+    D -->|No| F{income >= 0 AND < 15100?}
+    F -->|Yes| G[tax = income * 0.10]
+    F -->|No| H{income >= 61300 AND < 123700?}
+    H -->|Yes| I[tax = 8440 + 0.25 * income - 61300]
+    H -->|No| J{income >= 123700 AND < 188450?}
+    J -->|Yes| K[tax = 24040 + 0.28 * income - 123700]
+    J -->|No| L{income >= 188450 AND < 336550?}
+    L -->|Yes| M[tax = 42170 + 0.33 * income - 188450]
+    L -->|No| N{income >= 336550?}
+    N -->|Yes| O[tax = 91043 + 0.35 * income - 336550]
+    N -->|No| P[tax = 0.0]
+    C --> Q[Return tax]
+    E --> Q
+    G --> Q
+    I --> Q
+    K --> Q
+    M --> Q
+    O --> Q
+    P --> Q
+    Q --> R[End]
