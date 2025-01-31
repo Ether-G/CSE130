@@ -1,0 +1,139 @@
+What options can the Kotlin Compiler use:
+This took a bit of reading, the compiler can use:
+
+IF/ELIF - YES
+Range checks can be translated into if-else conditions.
+// How compiler might translate the WHEN to IF/ELSE-IF
+fun getMessage(grade: Int): String {
+    if (grade in 90..100) {
+        return "Great Job!"
+    } else if (grade in 80..89) {
+        return "Solid work"
+    } else if (grade in 60..79) {
+        return "Perhaps more work is needed"
+    } else if (grade in 1..59) {
+        return "Please try again"
+    } else if (grade == 0) {
+        return "Failed to submit"
+    } else if (grade !in 101..Int.MAX_VALUE) {
+        return "Unbelievable"
+    } else {
+        return "Invalid"
+    }
+}
+
+Binary Search: YES
+
+It can definitely do this since all the ranges are ordered numerically.
+// How compiler might implement using binary search
+fun getMessage(grade: Int): String {
+    val ranges = arrayOf(
+        0..0 to "Failed to submit",
+        1..59 to "Please try again",
+        60..79 to "Perhaps more work is needed",
+        80..89 to "Solid work",
+        90..100 to "Great Job!"
+    )
+    
+    var left = 0
+    var right = ranges.size - 1
+    
+    while (left <= right) {
+        val mid = (left + right) / 2
+        val range = ranges[mid].first
+        
+        when {
+            grade in range -> return ranges[mid].second
+            grade < range.first -> right = mid - 1
+            else -> left = mid + 1
+        }
+    }
+    return if (grade > 100) "Unbelievable" else "Invalid"
+}
+
+Jump Table: NO
+
+The compiler would not choose to do this with THIS version of the code since using ranges makes it inefficient. Example below, and explanation further down when doing refactor.
+// This would be inefficient because of ranges
+fun getMessage(grade: Int): String {
+    // Would need array of size MAX_VALUE!
+    return when (grade) {
+        0 -> "Failed to submit"
+        1 -> "Please try again"
+        2 -> "Please try again"
+        // ... would need entry for EVERY possible value
+        89 -> "Solid work"
+        90 -> "Great Job!"
+        // ... and so on
+    }
+}
+
+Iteration: NO
+
+The compiler would not choose to do this since it would be very inefficient for range checking. It would have to check each range sequentially. Example below.
+// This would be inefficient way to check ranges
+fun getMessage(grade: Int): String {
+    val ranges = arrayOf(
+        0..0 to "Failed to submit",
+        1..59 to "Please try again",
+        60..79 to "Perhaps more work is needed",
+        80..89 to "Solid work",
+        90..100 to "Great Job!"
+    )
+    
+    for ((range, message) in ranges) {
+        if (grade in range) {
+            return message
+        }
+    }
+    return if (grade > 100) "Unbelievable" else "Invalid"
+}
+
+
+
+
+
+REFACTORING REASONING:
+
+IF/ELIF Chains:
+I would like to avoid a IF/ELIF chain due to the fact that before a condition is met, all previous conditions in that orientation must be checked first. If I have 10 conditions, I would have to check all 10 if the condition is met on the last item on the chain.
+
+So the time complexity for an if/elif chain would be in the best case O(1) if the first condition matches, and then in the worst case it would be O(n) [where all conditions need to be checked]. If I was to assume an even distribution of cases, the avg would be O (n/2).
+
+Iteration: Iteration would also be a poor choice in this refactor because it would require looping through each possible range until a match is found (example above). This means we would always need to perform the iterations until we find the correct range, with no possibility of early optimization. The time complexity on this would be O(n) in every case.
+
+Binary Search: While using a binary search would be better than iteration and possibly better than if/elif, its still probably not optimal. It would require maintaining a sorted array of ranges and performing multiple comparisons to find the correct range. The time complexity for this is O(log(n)). While this would work... its a little too complex for how simple this grading tool is and does not take advantage of the discrete nature of the grade ranges.
+
+Jump Table: This can be both our best solution and our worst. If I was to use a traditional jump table, it would require an entry for every possible grade value, making the lookup way more complex than it needs to be. However, our ranges happen to land on the tens place, which actually makes this not a bad solution for a refactor.
+
+
+
+
+REFACTORED CODE:
+
+var message = when(grade / 10) {  // Integer division
+    10, 9 -> "Great Job!"
+    8 -> "Solid work"
+    7, 6 -> "Perhaps more work is needed"
+    in 1..5 -> "Please try again"
+    0 -> if(grade == 0) "Failed to submit" else "Please try again"
+    else -> "Unbelievable"
+}
+
+
+WHY IS IT FASTER/BETTER?
+
+ Integer division optimization
+By using grade/10, which is what the scales increment by, we convert the ranges into simple integer cases.
+This allows the compiler to optimize it into a jump table
+Reduces the problem from 100+ possible values to just 11 cases (0-10)
+Time Complexity:
+O(1) lookup time for all cases
+Single division operation
+Direct mapping to results without multiple comparisons
+Memory Efficiency:
+I know this point is a little silly for how small of a thing this is, but in this case, it only needs storage for the 11 possible cases. Which means there is no need for a large lookup table, or range arrays.
+Compiler optimization (What was really being targeted here):
+Simple integer comparisons are highly optimizable
+Can be converted to a efficient jump table by the compiler.
+No complex range checking needed.
