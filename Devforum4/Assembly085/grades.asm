@@ -1,3 +1,5 @@
+section .note.GNU-stack noalloc noexec nowrite progbits  ; Fix stack warning
+
 section .data
     prompt db "Enter grade (0-100): ", 0
     prompt_len equ $ - prompt
