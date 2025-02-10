@@ -17,7 +17,7 @@
 #      letters are base 26 numbers, I just need to id the base, then sort based on where it
 #      places in its base.
 # 6. How long did it take for you to complete the assignment?
-#      It took ~90 mins.
+#      It took ~60 mins.
 
 import json
 
@@ -26,8 +26,9 @@ def binary_search(sorted_list, target):
     Perform binary search to find target string in sorted_list.
     Returns True if found, False otherwise.
     
-    The list must be sorted in lexicographical (dictionary) order.
-    String comparisons follow standard Python rules:
+    Sorted in alphabetical order.
+
+    I looked up the standard python rules for this:
     - 'A' < 'B' (uppercase before lowercase)
     - 'a' < 'b' (alphabetical order)
     - 'C++' < 'Java' (character by character comparison)
@@ -38,7 +39,7 @@ def binary_search(sorted_list, target):
     while left <= right:
         middle = (left + right) // 2
         
-        # Compare strings - Python uses lexicographical comparison
+        # Compare strings
         if sorted_list[middle] == target:
             return True
         elif sorted_list[middle] < target:
@@ -49,19 +50,19 @@ def binary_search(sorted_list, target):
     return False
 
 def main():
-    # Get filename from user
+    # Get filename
     filename = input("What is the name of the file? ")
     
     try:
-        # Read the JSON file
+        # Read JSON
         with open(filename, 'r') as file:
             data = json.load(file)
             array = data.get("array", [])
         
-        # Get search term from user
+        # Get search term
         search_term = input("What name are we looking for? ")
         
-        # Perform search and display results
+        # search and results
         if binary_search(array, search_term):
             print(f"We found {search_term} in {filename}.")
         else:
