@@ -10,7 +10,7 @@
 # 4. Algorithmic Efficiency:
 #      O(log n) - The binary search algorithm divides the search space in half with
 #      each iteration. For n strings in the list, it performs at most log2(n) string
-#      comparisons. String comparisons are lexicographical (dictionary order).
+#      comparisons. String comparisons are alphabetical order.
 # 5. What was the hardest part? Be as specific as possible.
 #      The hardest part for me was initially figuring out how to apply the binary search
 #      algorithm we came up with to sorted lists of strings. But then I remembered that
